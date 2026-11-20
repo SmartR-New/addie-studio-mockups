@@ -4760,6 +4760,21 @@
 
       const MOCK_PROJECTS = [
         {
+          id: "proj-smartr-demo",
+          name: "SmartR — Product literacy (live demo)",
+          type: "Product / L&D enablement",
+          stage: "module-a",
+          updated: "2025-11-20",
+          owner: "You",
+          team: "SmartR Solutions",
+          folder: "client/Sample",
+          sourceLive: true,
+          demoProject: true,
+          description:
+            "Internal course for sales and CS on the SmartR workforce capability platform (goals, competency, learning, performance, AI-assisted content) — grounded in the 2025 company profile.",
+          members: ["You — Instructional designer", "SmartR Marketing — SME"],
+        },
+        {
           id: "proj-cw",
           name: "CW — NParks Contact Centre",
           type: "Contact centre / Feedback",
@@ -4889,7 +4904,11 @@
         }
       }
 
+      const IS_LIVE_DEMO =
+        /\.github\.io$/i.test(location.hostname) || /[?&]demo=1\b/.test(location.search || "");
+
       function lastProjectId() {
+        if (IS_LIVE_DEMO) return "proj-smartr-demo";
         return loadRecentIds().find((id) => findProject(id)) || MOCK_PROJECTS[0].id;
       }
 
@@ -4899,7 +4918,13 @@
       }
 
       function projectHasLiveSources(project) {
-        return !!(project && (project.sourceLive || project.folder === "client/CW"));
+        return !!(
+          project &&
+          (project.sourceLive ||
+            project.folder === "client/CW" ||
+            project.folder === "client/Sample" ||
+            (DEMO_STATIC_SOURCES && DEMO_STATIC_SOURCES[project.folder]))
+        );
       }
 
       const breadcrumbEl = document.getElementById("breadcrumb-project-name");
@@ -4969,6 +4994,28 @@
       };
 
       const PROJECT_ANALYZE_SUMMARY = {
+        "proj-smartr-demo": {
+          problem:
+            "Prospects and new hires hear inconsistent stories about what SmartR is (TMS vs full workforce capability platform). They confuse modules (goals, work, competency, learning, appraisal, AI content) and integration paths (SCORM, Frappe Learning). Sales and customer success need one accurate narrative tied to the official 2025 company profile.",
+          goals: [
+            ["Learners", "SmartR sales, customer success, and partner enablement staff."],
+            [
+              "Will be able to",
+              "Explain SmartR as a workforce capability platform; describe each pillar (Goals, Work, Competency, Learning & Development, Performance Appraisal, AI-assisted content); and position SCORM/HTML5 and multi-platform delivery without overstating features.",
+            ],
+            ["Performance context", "Discovery calls, demos, and onboarding week for new hires."],
+            ["Tools on the job", "SmartR TMS, demo tenants, company profile deck, Frappe Learning where applicable."],
+          ],
+          resources: {
+            sources: true,
+            lines: [
+              ["Sources", "SmartR Company Profile 2025.pdf (pre-loaded on live demo)"],
+              ["People", "Marketing / product marketing for factual sign-off"],
+              ["Constraints", "Public claims must match approved profile; no customer logos without permission"],
+              ["Sign-off", "Draft — use Co-Creator auto-fill + grill for gaps"],
+            ],
+          },
+        },
         "proj-cw": {
           problem:
             "C&W Contact Centre agents are NParks’ first touchpoint across many channels and must follow strict routing, escalation, and service standards. Without consistent knowledge of NParks’ mandate, government feedback policies, and channel-specific NCMS workflows, cases are misrouted, urgent public-safety issues are delayed, and QSM escalations are missed — risking demerits, SLA failure, and reputational harm.",
@@ -5934,8 +5981,8 @@
         },
       };
 
-      /** Grounded example answers (prototype: indexed from approved NParks C&W PDFs / analyze draft). */
-      const SOURCE_GROUNDED_EXAMPLES = {
+      /** Grounded example answers — NParks C&W project. */
+      const SOURCE_GROUNDED_EXAMPLES_CW = {
         "scope-problem": {
           draft:
             "C&W Contact Centre agents supporting NParks must act as NParks' first touchpoint across phone, digital, OSSG, email, and social channels while meeting strict routing, escalation, and service standards. When agents lack consistent knowledge of NParks' mandate, government feedback policies (NWD, FRP, FMGA), and channel-specific NCMS workflows, cases are misrouted, urgent public-safety issues are delayed, and QSM escalations are missed — exposing the operation to SLA failure and reputational harm. A structured learning path is needed to align new and existing CCAs with current NParks procedures and C&W conduct expectations.",
@@ -6029,6 +6076,147 @@
         },
       };
 
+      /** Grounded drafts — SmartR Company Profile 2025 (Sample / live demo project). */
+      const SOURCE_GROUNDED_EXAMPLES_SAMPLE = {
+        "scope-problem": {
+          draft:
+            "Organizations struggle to connect strategy, daily work, skills, and learning in one place — so L&D and HR run fragmented tools and cannot prove capability impact. SmartR positions itself as a workforce capability platform (goals, work management, competency, learning & development, performance appraisal, AI-assisted content) to unify upskilling with business goals; enablement staff must articulate that story consistently using the 2025 company profile.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Workforce Capability Platform",
+              quote: "SmartR helps organizations achieve their goals while maximizing their human capital.",
+            },
+          ],
+        },
+        "scope-goals": {
+          draft:
+            "After training, enablement staff can explain SmartR pillars (Goals/OKR-KPI, Work Management, Competency Management, Learning & Development, Expert & Content Hub, Performance Appraisal, AI Assisted Content); describe blended learning and SCORM/HTML5 compatibility; and cite Singapore/Vietnam presence when relevant — without inventing features absent from the profile.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Platform modules",
+              quote: "Blended learning; compatible LMS standard files (SCORM and HTML5); analytics & reporting.",
+            },
+          ],
+        },
+        "scope-audience": {
+          draft:
+            "Primary: SmartR sales and customer success staff briefing prospects on the platform. Secondary: new hires in week-one onboarding. Prerequisites: familiarity with basic LMS/TMS terms. Constraints: use only profile-approved claims; bilingual delivery optional (EN primary; Vietnam office context when needed).",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Locations",
+              quote: "Singapore and Vietnam offices; workforce capability platform for organizational growth.",
+            },
+          ],
+        },
+        "env-q1": {
+          draft:
+            "Blended and self-paced: e-learning modules on the platform story plus live demo practice; content accessible on multiple devices per company profile.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Delivery",
+              quote: "Blended learning; multiple platforms — access content and services from any device.",
+            },
+          ],
+        },
+        "env-q2": {
+          draft:
+            "English-first delivery; short sessions for busy sellers; LMS constraints satisfied via SCORM/HTML5 standard files rather than custom builds.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Standards",
+              quote: "Adopt industry-standard SCORM and HTML5 formats for effortless deployment of interactive content.",
+            },
+          ],
+        },
+        "env-q3": {
+          draft:
+            "SMEs: product marketing; facilitators: enablement lead; tools: SmartR demo tenant, official profile PDF, curated Expert & Content Hub references.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Expert & Content Hub",
+              quote: "Access curated learning content and connect with industry experts to accelerate organizational growth.",
+            },
+          ],
+        },
+        "needs-q1": {
+          draft:
+            "Inconsistent messaging in calls and decks — prospects hear different module lists and miss the integrated capability story (not just an LMS upload tool).",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Value proposition",
+              quote: "Drive performance and upskill teams with SmartR, the Workforce Capability Platform.",
+            },
+          ],
+        },
+        "needs-q2": {
+          draft:
+            "Training helps because structured product literacy reduces rework on demos and aligns customer success with how SCORM, competency frameworks, and personalized learning are positioned in the profile.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Learning & Development",
+              quote: "Personalized learning tailored to individual skill levels and company goals.",
+            },
+          ],
+        },
+        "needs-q3": {
+          draft:
+            "Indicators: longer sales cycles when discovery is vague; support tickets from mis-set expectations; new hires unable to map customer pain to platform modules during shadow calls.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Analytics",
+              quote: "Make smart decisions based on accurate reporting and analysis.",
+            },
+          ],
+        },
+        "learner-q1": {
+          draft:
+            "Learners know basic SaaS sales or CS workflows; misconceptions include treating SmartR as file storage only or as a replacement for full HRIS without competency/goals context.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Competency",
+              quote: "Track, assess, and develop employee skills and competency levels to build a future-ready workforce.",
+            },
+          ],
+        },
+        "learner-q3": {
+          draft:
+            "English working language; Vietnam team members may need glossary for EN product terms; keep public-facing claims aligned with approved profile wording.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "Regional presence",
+              quote: "Singapore and Vietnam offices.",
+            },
+          ],
+        },
+        "task-q1": {
+          draft:
+            "Critical tasks: open a standard discovery call; map prospect pains to Goals / Competency / Learning modules; explain SCORM upload path; hand off to technical demo without unsupported promises.",
+          support: [
+            {
+              file: "SmartR Company Profile 2025.pdf",
+              loc: "SCORM",
+              quote: "Effortless deployment of interactive content via SCORM and HTML5.",
+            },
+          ],
+        },
+      };
+
+      function getSourceGroundedExamples() {
+        if (activeProject?.folder === "client/Sample") return SOURCE_GROUNDED_EXAMPLES_SAMPLE;
+        return SOURCE_GROUNDED_EXAMPLES_CW;
+      }
+
       let pendingGroundedExample = null;
 
       /** grill-me protocol for fields with no source-backed draft (one question per turn). */
@@ -6059,7 +6247,7 @@
       }
 
       function canAutofillFieldFromSources(fieldKey) {
-        const pack = SOURCE_GROUNDED_EXAMPLES[fieldKey];
+        const pack = getSourceGroundedExamples()[fieldKey];
         if (!pack) return false;
         const citable = getCitableApprovedSources();
         if (!citable.length) return false;
@@ -6071,7 +6259,7 @@
 
       function applyAutofillGroundedField(step) {
         const fieldKey = step.field;
-        const pack = SOURCE_GROUNDED_EXAMPLES[fieldKey];
+        const pack = getSourceGroundedExamples()[fieldKey];
         if (!pack || !canAutofillFieldFromSources(fieldKey)) return false;
         const citable = getCitableApprovedSources();
         const usedRefs = [];
@@ -6436,6 +6624,8 @@
 
       function sourceStudioOrigin() {
         if (sourceApiBase) return sourceApiBase.replace(/\/api\/sources\/?$/i, "");
+        const base = demoAssetsBasePath();
+        if (base || IS_LIVE_DEMO) return location.origin + base;
         if (location.protocol.startsWith("http") && location.hostname === "127.0.0.1") return location.origin;
         return "http://127.0.0.1:8765";
       }
@@ -6515,7 +6705,7 @@
           return;
         }
 
-        const pack = SOURCE_GROUNDED_EXAMPLES[step.field];
+        const pack = getSourceGroundedExamples()[step.field];
         if (!pack) {
           appendAiMessage(
             "I can not find the answer from the source information, reply in your own words or upload more document." +
@@ -8533,6 +8723,53 @@
 
       /* —— Source Library → active project's client/<folder>/source/ —— */
       const SOURCE_STORE_REL = "client/CW/source";
+      const DEMO_STATIC_SOURCES = {
+        "client/Sample": [
+          {
+            id: "src-smartr-profile-2025",
+            title: "SmartR Company Profile 2025",
+            file: "SmartR Company Profile 2025.pdf",
+            relPath: "client/Sample/source/SmartR Company Profile 2025.pdf",
+            url: null,
+            type: "PDF",
+            version: "2025",
+            approved: true,
+            sensitivity: "Internal",
+            tags: ["slide-deck", "policy-reference"],
+          },
+        ],
+      };
+
+      function demoAssetsBasePath() {
+        const path = location.pathname || "";
+        const i = path.indexOf("/addie-studio-mockups");
+        if (i >= 0) return path.slice(0, i + "/addie-studio-mockups".length);
+        const j = path.indexOf("/mockups/");
+        if (j >= 0) return path.slice(0, j);
+        return "";
+      }
+
+      function staticManifestUrl() {
+        const base = demoAssetsBasePath();
+        const rel = sourceStoreRel();
+        return location.origin + (base ? base + "/" : "/") + rel + "/manifest.json";
+      }
+
+      async function loadStaticSourceManifest() {
+        const folder = activeProject?.folder;
+        const embedded = folder && DEMO_STATIC_SOURCES[folder];
+        try {
+          const res = await fetch(staticManifestUrl(), { cache: "no-cache" });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && Array.isArray(data.items)) return data.items;
+          }
+        } catch {
+          /* fall through */
+        }
+        return embedded ? embedded.slice() : null;
+      }
+
       const SOURCE_API_CANDIDATES = [
         location.protocol.startsWith("http") && location.port ? location.origin + "/api/sources" : null,
         "http://127.0.0.1:8765/api/sources",
@@ -9087,23 +9324,36 @@
           setSourceStoreLine(true, "this project has no files on disk yet · use Upload source");
           return;
         }
-        const data = await probeSourceApi();
-        if (data) {
-          mergeSourceItems(data.items);
-          setSourceStoreLine(true, "server connected");
-        } else {
-          mergeSourceItems([]);
-          setSourceStoreLine(false);
-          if (sourceApiOutdated.length) {
-            showSourceAlert(
-              "The studio server on " +
-                sourceApiOutdated.join(", ") +
-                " is out of date (no status support). Stop it, run addie_studio/studio-local-server.ps1 again, and reload.",
-              "error"
-            );
-          } else if (currentView === "sources") {
-            showSourceAlert("Cannot reach the studio server. Start addie_studio/studio-local-server.ps1 to list and update sources.", "error");
+        const folder = activeProject?.folder;
+        const preferStatic = !!(folder && folder !== "client/CW" && DEMO_STATIC_SOURCES[folder]);
+        if (!preferStatic) {
+          const data = await probeSourceApi();
+          if (data) {
+            mergeSourceItems(data.items);
+            setSourceStoreLine(true, "server connected");
+            return;
           }
+        }
+        const staticItems = await loadStaticSourceManifest();
+        if (staticItems) {
+          mergeSourceItems(staticItems);
+          const extra = IS_LIVE_DEMO
+            ? "live demo · pre-loaded sources (upload disabled)"
+            : "static manifest · no local server";
+          setSourceStoreLine(true, extra);
+          return;
+        }
+        mergeSourceItems([]);
+        setSourceStoreLine(false);
+        if (sourceApiOutdated.length) {
+          showSourceAlert(
+            "The studio server on " +
+              sourceApiOutdated.join(", ") +
+              " is out of date (no status support). Stop it, run addie_studio/studio-local-server.ps1 again, and reload.",
+            "error"
+          );
+        } else if (currentView === "sources" && !IS_LIVE_DEMO) {
+          showSourceAlert("Cannot reach the studio server. Start addie_studio/studio-local-server.ps1 to list and update sources.", "error");
         }
       }
 
@@ -9253,7 +9503,24 @@
           }
         });
 
-        document.getElementById("btn-upload-source")?.addEventListener("click", openUploadModal);
+        const uploadBtn = document.getElementById("btn-upload-source");
+        if (uploadBtn && IS_LIVE_DEMO) {
+          uploadBtn.disabled = true;
+          uploadBtn.setAttribute("aria-disabled", "true");
+          uploadBtn.title = "Live demo — sources are pre-loaded. Run locally with studio-local-server.ps1 to upload.";
+          const note = document.createElement("span");
+          note.className = "badge badge-neutral coming-soon-tag";
+          note.style.marginLeft = "0.35rem";
+          note.textContent = "Pre-loaded";
+          uploadBtn.appendChild(note);
+        }
+        uploadBtn?.addEventListener("click", () => {
+          if (IS_LIVE_DEMO) {
+            showSourceAlert("Live demo uses pre-loaded SmartR Company Profile 2025.pdf — upload is disabled on GitHub Pages.", "info");
+            return;
+          }
+          openUploadModal();
+        });
         if (!SMARTR_STORAGE_SYNC_COMING_SOON) {
           document.getElementById("btn-sync-smartr-storage")?.addEventListener("click", () => {
             syncSmartRStorage();

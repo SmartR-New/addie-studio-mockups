@@ -1,0 +1,20 @@
+{
+  "project": "Sample",
+  "storeRelPath": "client/Sample/source",
+  "items": [
+    {
+      "id": "src-smartr-profile-2025",
+      "title": "SmartR Company Profile 2025",
+      "file": "SmartR Company Profile 2025.pdf",
+      "relPath": "client/Sample/source/SmartR Company Profile 2025.pdf",
+      "url": null,
+      "type": "PDF",
+      "version": "2025",
+      "approved": true,
+      "sensitivity": "Internal",
+      "size": 7271918,
+      "uploadedAt": "2025-11-20T00:00:00.000Z",
+      "tags": ["slide-deck", "policy-reference"]
+    }
+  ]
+}
